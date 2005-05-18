@@ -1,0 +1,22 @@
+.\" $Id$
+.Dd May 18, 2005
+.Dt SHUFFLE 1
+.Os
+.Sh NAME
+.Nm shuffle
+.Nd shuffle lines
+.Sh SYNOPSIS
+.Nm shuffle
+.Op Ar
+.Sh DESCRIPTION
+The
+.Nm
+utility randomizes lines in a file.
+If no
+.Ar file
+arguments are specified, lines read from standard input are randomized.
+The lines are printed in random order to standard output.
+.Sh SEE ALSO
+.Xr sort 1 ,
+.Xr arc4random 4 ,
+.Xr random 6
