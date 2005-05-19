@@ -1,7 +1,9 @@
 /* $Id$ */
 
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 __dead void	 usage(void);
@@ -27,7 +29,7 @@ main(int argc, char *argv[])
 	if (*argv == NULL)
 		shuffle(stdin);
 	else
-		while (*argv != NULL) {
+		for (; *argv != NULL; argv++) {
 			if (strcmp(*argv, "-") == 0)
 				fp = stdin;
 			else {
@@ -45,25 +47,29 @@ void
 shuffle(FILE *fp)
 {
 	char **lines, **linesdup;
-	size_t cur, max;
+	size_t i, n, cur, max;
 	char *ln;
-	int i;
 
 	/* XXX: predict nlines from st_siz */
 	lines = NULL;
 	cur = max = 0;
 	while ((ln = getline(fp)) != NULL) {
-		if (++cur >= max) {
+		if (cur >= max) {
 			max += INCR;
 			if ((linesdup = realloc(lines,
 			    max * sizeof(*linesdup))) == NULL)
 				err(1, "realloc");
+			lines = linesdup;
 		}
-		lines[cur] = ln;
+		lines[cur++] = ln;
 	}
-	qsort(lines, cur, sizeof(*lines), cmp);
-	for (i = 0; i < cur; i++)
-		free(lines[i]);
+//	qsort(lines, cur, sizeof(*lines), cmp);
+	for (i = 0; i < cur; i++) {
+		n = arc4random() % (cur - i);
+		printf("%s\n", lines[n]);
+		free(lines[n]);
+		lines[n] = lines[cur - i - 1];
+	}
 	free(lines);
 }
 
